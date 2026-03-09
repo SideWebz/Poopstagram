@@ -30,13 +30,6 @@ const Profile = ({ currentUser }) => {
           setUser(response.data);
           setBio(response.data.bio || '');
           setProfilePicture(response.data.profilePicture || null);
-          
-          // Check follow status
-          const currentUserResponse = await authService.getProfile();
-          const isFollowed = currentUserResponse.data.following.some(
-            followedId => followedId.toString() === userId.toString()
-          );
-          setIsFollowing(isFollowed);
         } else if (currentUser?.id) {
           // Viewing own profile
           const response = await authService.getProfile();
@@ -47,13 +40,38 @@ const Profile = ({ currentUser }) => {
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
-        setIsFollowing(false);
       } finally {
         setLoading(false);
       }
     };
     
     loadProfile();
+  }, [userId, currentUser?.id]);
+
+  // Check follow status when viewing another user's profile
+  useEffect(() => {
+    const checkFollowStatus = async () => {
+      if (userId && userId !== currentUser?.id && currentUser?.id) {
+        try {
+          const currentUserResponse = await authService.getProfile();
+          console.log('Current user following list:', currentUserResponse.data.following);
+          console.log('Target userId:', userId);
+          
+          const isFollowed = currentUserResponse.data.following.some(
+            followedId => followedId.toString() === userId.toString()
+          );
+          console.log('Is followed:', isFollowed);
+          setIsFollowing(isFollowed);
+        } catch (error) {
+          console.error('Error checking follow status:', error);
+          setIsFollowing(false);
+        }
+      } else {
+        setIsFollowing(false);
+      }
+    };
+
+    checkFollowStatus();
   }, [userId, currentUser?.id]);
 
   // Load posts
@@ -155,22 +173,27 @@ const Profile = ({ currentUser }) => {
     
     try {
       setIsFollowingLoading(true);
-      const wasFollowing = isFollowing;
       
-      // Optimistically update UI
-      setIsFollowing(!wasFollowing);
-      
+      if (isFollowing) {
+        await authService.unfollowUser(userId);
+        // If successful, set to false
+        setIsFollowing(false);
+      } else {
+        await authService.followUser(userId);
+        // If successful, set to true
+        setIsFollowing(true);
+      }
+    } catch (error) {
+      console.error('Error toggling follow:', error);
+      // Recheck the actual status from backend on error
       try {
-        if (wasFollowing) {
-          await authService.unfollowUser(userId);
-        } else {
-          await authService.followUser(userId);
-        }
-      } catch (error) {
-        // Revert on error and log
-        console.error('Error toggling follow:', error);
-        setIsFollowing(wasFollowing);
-        alert('Failed to update follow status. Please try again.');
+        const currentUserResponse = await authService.getProfile();
+        const isFollowed = currentUserResponse.data.following.some(
+          followedId => followedId.toString() === userId.toString()
+        );
+        setIsFollowing(isFollowed);
+      } catch (statusError) {
+        console.error('Error rechecking follow status:', statusError);
       }
     } finally {
       setIsFollowingLoading(false);
