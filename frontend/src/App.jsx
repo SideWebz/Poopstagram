@@ -57,6 +57,7 @@ function App() {
         <Route path="/" element={user ? <Home user={user} /> : <Navigate to="/login" />} />
         <Route path="/login" element={!user ? <Login onLoginSuccess={handleLoginSuccess} /> : <Navigate to="/" />} />
         <Route path="/register" element={!user ? <Register onLoginSuccess={handleLoginSuccess} /> : <Navigate to="/" />} />
+        <Route path="/profile" element={user ? <Profile currentUser={user} /> : <Navigate to="/login" />} />
         <Route path="/profile/:userId" element={user ? <Profile currentUser={user} /> : <Navigate to="/login" />} />
       </Routes>
 

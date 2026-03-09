@@ -3,6 +3,27 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+html, body {
+  touch-action: manipulation;
+  -webkit-user-scalable: no;
+  user-scalable: no;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
 :root {
@@ -16,14 +37,6 @@
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  background: var(--bg);
-  color: var(--text);
-}
-
 /* Remove Bootstrap's defaults */
 .btn,
 .form-control,
@@ -32,6 +45,13 @@ body {
 .dropdown-menu,
 .nav-item {
   border-radius: 0 !important;
+  user-select: auto;
+}
+
+/* Allow text selection in inputs */
+input, textarea, button, a {
+  user-select: auto;
+  -webkit-user-select: auto;
 }
 
 /* NAVBAR */

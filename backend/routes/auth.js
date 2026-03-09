@@ -7,7 +7,10 @@ router.post('/register', authController.register);
 router.post('/login', authController.login);
 
 router.get('/profile', authenticateToken, authController.getProfile);
+router.get('/profile/:userId', authenticateToken, authController.getUserProfile);
 router.put('/profile', authenticateToken, authController.updateProfile);
 router.get('/search', authenticateToken, authController.searchUsers);
+router.post('/follow/:userId', authenticateToken, authController.followUser);
+router.post('/unfollow/:userId', authenticateToken, authController.unfollowUser);
 
 module.exports = router;

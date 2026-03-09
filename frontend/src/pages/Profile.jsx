@@ -15,13 +15,22 @@ const Profile = ({ currentUser }) => {
   const [uploadingPicture, setUploadingPicture] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [displayIndex, setDisplayIndex] = useState(0);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowingLoading, setIsFollowingLoading] = useState(false);
   const loaderRef = useRef(null);
   const BATCH_SIZE = 5;
 
   useEffect(() => {
-    fetchUserProfile();
-    fetchUserPosts();
-  }, [userId]);
+    if (userId && userId !== currentUser?.id) {
+      // Viewing another user's profile
+      fetchOtherUserProfile();
+      fetchUserPosts();
+    } else {
+      // Viewing own profile
+      fetchUserProfile();
+      fetchUserPosts();
+    }
+  }, [userId, currentUser?.id]);
 
   // Load more posts when needed
   useEffect(() => {
@@ -62,9 +71,25 @@ const Profile = ({ currentUser }) => {
     }
   };
 
+  const fetchOtherUserProfile = async () => {
+    try {
+      const response = await authService.getUserProfile(userId);
+      setUser(response.data);
+      setBio(response.data.bio || '');
+      setProfilePicture(response.data.profilePicture || null);
+
+      // Check if current user is following this user
+      const currentUserResponse = await authService.getProfile();
+      setIsFollowing(currentUserResponse.data.following.includes(userId));
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
+  };
+
   const fetchUserPosts = async () => {
     try {
-      const response = await postService.getUserPosts(userId);
+      const targetUserId = userId || currentUser?.id;
+      const response = await postService.getUserPosts(targetUserId);
       setAllPosts(response.data);
       setDisplayedPosts(response.data.slice(0, BATCH_SIZE));
       setDisplayIndex(BATCH_SIZE);
@@ -119,6 +144,23 @@ const Profile = ({ currentUser }) => {
       setSelectedPost(null);
     } catch (error) {
       console.error('Error deleting post:', error);
+    }
+  };
+
+  const handleFollowToggle = async () => {
+    try {
+      setIsFollowingLoading(true);
+      if (isFollowing) {
+        await authService.unfollowUser(userId);
+        setIsFollowing(false);
+      } else {
+        await authService.followUser(userId);
+        setIsFollowing(true);
+      }
+    } catch (error) {
+      console.error('Error toggling follow:', error);
+    } finally {
+      setIsFollowingLoading(false);
     }
   };
 
@@ -219,7 +261,7 @@ const Profile = ({ currentUser }) => {
             )}
 
             {/* Bio Edit Section */}
-            {currentUser?.id === user?._id && (
+            {currentUser?.id === user?._id ? (
               <>
                 {isEditing ? (
                   <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
@@ -272,6 +314,22 @@ const Profile = ({ currentUser }) => {
                   </button>
                 )}
               </>
+            ) : (
+              // Follow/Unfollow button for other users
+              <button
+                className="btn-edit-profile"
+                onClick={handleFollowToggle}
+                disabled={isFollowingLoading}
+                style={{
+                  background: isFollowing ? 'white' : '#0095f6',
+                  color: isFollowing ? '#0095f6' : 'white',
+                  border: isFollowing ? '1px solid #0095f6' : 'none',
+                  cursor: isFollowingLoading ? 'not-allowed' : 'pointer',
+                  opacity: isFollowingLoading ? 0.6 : 1
+                }}
+              >
+                {isFollowingLoading ? 'Loading...' : (isFollowing ? 'Following' : 'Follow')}
+              </button>
             )}
           </div>
         </div>

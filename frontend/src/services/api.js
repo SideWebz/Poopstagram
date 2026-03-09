@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:2003';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://91.99.141.32:2003';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -25,10 +25,16 @@ export const authService = {
     api.post('/auth/login', { email, password }),
   getProfile: () =>
     api.get('/auth/profile'),
+  getUserProfile: (userId) =>
+    api.get(`/auth/profile/${userId}`),
   updateProfile: (data) =>
     api.put('/auth/profile', data),
   searchUsers: (query) =>
-    api.get(`/auth/search?q=${encodeURIComponent(query)}`)
+    api.get(`/auth/search?q=${encodeURIComponent(query)}`),
+  followUser: (userId) =>
+    api.post(`/auth/follow/${userId}`),
+  unfollowUser: (userId) =>
+    api.post(`/auth/unfollow/${userId}`)
 };
 
 export const postService = {
