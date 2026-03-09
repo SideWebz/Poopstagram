@@ -82,18 +82,22 @@ const Profile = ({ currentUser }) => {
       setUser(response.data);
       setBio(response.data.bio || '');
       setProfilePicture(response.data.profilePicture || null);
-
-      // Check if current user is following this user
-      const currentUserResponse = await authService.getProfile();
-      const isUserFollowed = currentUserResponse.data.following.some(
-        followedId => followedId.toString() === userId.toString()
-      );
-      setIsFollowing(isUserFollowed);
+      
+      checkFollowStatus();
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      setIsFollowing(false);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkFollowStatus = async () => {
+    try {
+      const currentUserResponse = await authService.getProfile();
+      const isFollowed = currentUserResponse.data.following.includes(userId);
+      setIsFollowing(isFollowed);
+    } catch (error) {
+      console.error('Error checking follow status:', error);
     }
   };
 
@@ -161,32 +165,19 @@ const Profile = ({ currentUser }) => {
   const handleFollowToggle = async () => {
     try {
       setIsFollowingLoading(true);
+      
       if (isFollowing) {
         await authService.unfollowUser(userId);
-        setIsFollowing(false);
       } else {
         await authService.followUser(userId);
-        setIsFollowing(true);
       }
       
-      // Refresh the following status after successful toggle
-      const currentUserResponse = await authService.getProfile();
-      const isUserFollowed = currentUserResponse.data.following.some(
-        followedId => followedId.toString() === userId.toString()
-      );
-      setIsFollowing(isUserFollowed);
+      // Always refresh the follow status from the backend after any action
+      await checkFollowStatus();
     } catch (error) {
       console.error('Error toggling follow:', error);
-      // If there's an error, refresh the actual state from the backend
-      try {
-        const currentUserResponse = await authService.getProfile();
-        const isUserFollowed = currentUserResponse.data.following.some(
-          followedId => followedId.toString() === userId.toString()
-        );
-        setIsFollowing(isUserFollowed);
-      } catch (refreshError) {
-        console.error('Error refreshing follow status:', refreshError);
-      }
+      // Refresh to get actual state from backend in case of error
+      await checkFollowStatus();
     } finally {
       setIsFollowingLoading(false);
     }

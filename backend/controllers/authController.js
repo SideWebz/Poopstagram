@@ -168,8 +168,9 @@ exports.followUser = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Check if already following
-    if (currentUser.following.includes(userId)) {
+    // Check if already following - convert to strings for proper comparison
+    const isFollowing = currentUser.following.some(id => id.toString() === userId.toString());
+    if (isFollowing) {
       return res.status(400).json({ message: 'Already following this user' });
     }
 
