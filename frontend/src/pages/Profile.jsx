@@ -21,18 +21,58 @@ const Profile = ({ currentUser }) => {
   const BATCH_SIZE = 5;
 
   useEffect(() => {
-    if (userId && userId !== currentUser?.id) {
-      // Viewing another user's profile
-      setIsFollowing(false); // Reset follow state when switching profiles
-      setLoading(true);
-      fetchOtherUserProfile();
-      fetchUserPosts();
-    } else {
-      // Viewing own profile
-      setLoading(true);
-      fetchUserProfile();
-      fetchUserPosts();
-    }
+    const loadProfile = async () => {
+      try {
+        setLoading(true);
+        if (userId && userId !== currentUser?.id) {
+          // Viewing another user's profile
+          const response = await authService.getUserProfile(userId);
+          setUser(response.data);
+          setBio(response.data.bio || '');
+          setProfilePicture(response.data.profilePicture || null);
+          
+          // Check follow status
+          const currentUserResponse = await authService.getProfile();
+          const isFollowed = currentUserResponse.data.following.some(
+            followedId => followedId.toString() === userId.toString()
+          );
+          setIsFollowing(isFollowed);
+        } else if (currentUser?.id) {
+          // Viewing own profile
+          const response = await authService.getProfile();
+          setUser(response.data);
+          setBio(response.data.bio || '');
+          setProfilePicture(response.data.profilePicture || null);
+          setIsFollowing(false);
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        setIsFollowing(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadProfile();
+  }, [userId, currentUser?.id]);
+
+  // Load posts
+  useEffect(() => {
+    const loadPosts = async () => {
+      try {
+        const targetUserId = userId || currentUser?.id;
+        if (targetUserId) {
+          const response = await postService.getUserPosts(targetUserId);
+          setAllPosts(response.data);
+          setDisplayedPosts(response.data.slice(0, BATCH_SIZE));
+          setDisplayIndex(BATCH_SIZE);
+        }
+      } catch (error) {
+        console.error('Error fetching user posts:', error);
+      }
+    };
+    
+    loadPosts();
   }, [userId, currentUser?.id]);
 
   // Load more posts when needed
@@ -62,58 +102,6 @@ const Profile = ({ currentUser }) => {
     observer.observe(loaderRef.current);
     return () => observer.disconnect();
   }, [displayedPosts.length, allPosts.length, loadingMore]);
-
-  const fetchUserProfile = async () => {
-    try {
-      const response = await authService.getProfile();
-      setUser(response.data);
-      setBio(response.data.bio || '');
-      setProfilePicture(response.data.profilePicture || null);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchOtherUserProfile = async () => {
-    try {
-      const response = await authService.getUserProfile(userId);
-      setUser(response.data);
-      setBio(response.data.bio || '');
-      setProfilePicture(response.data.profilePicture || null);
-      
-      checkFollowStatus();
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const checkFollowStatus = async () => {
-    try {
-      const currentUserResponse = await authService.getProfile();
-      const isFollowed = currentUserResponse.data.following.includes(userId);
-      setIsFollowing(isFollowed);
-    } catch (error) {
-      console.error('Error checking follow status:', error);
-    }
-  };
-
-  const fetchUserPosts = async () => {
-    try {
-      const targetUserId = userId || currentUser?.id;
-      const response = await postService.getUserPosts(targetUserId);
-      setAllPosts(response.data);
-      setDisplayedPosts(response.data.slice(0, BATCH_SIZE));
-      setDisplayIndex(BATCH_SIZE);
-    } catch (error) {
-      console.error('Error fetching user posts:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleUpdateProfile = async () => {
     try {
@@ -163,21 +151,27 @@ const Profile = ({ currentUser }) => {
   };
 
   const handleFollowToggle = async () => {
+    if (isFollowingLoading) return; // Prevent double clicks
+    
     try {
       setIsFollowingLoading(true);
+      const wasFollowing = isFollowing;
       
-      if (isFollowing) {
-        await authService.unfollowUser(userId);
-      } else {
-        await authService.followUser(userId);
+      // Optimistically update UI
+      setIsFollowing(!wasFollowing);
+      
+      try {
+        if (wasFollowing) {
+          await authService.unfollowUser(userId);
+        } else {
+          await authService.followUser(userId);
+        }
+      } catch (error) {
+        // Revert on error and log
+        console.error('Error toggling follow:', error);
+        setIsFollowing(wasFollowing);
+        alert('Failed to update follow status. Please try again.');
       }
-      
-      // Always refresh the follow status from the backend after any action
-      await checkFollowStatus();
-    } catch (error) {
-      console.error('Error toggling follow:', error);
-      // Refresh to get actual state from backend in case of error
-      await checkFollowStatus();
     } finally {
       setIsFollowingLoading(false);
     }

@@ -19,6 +19,10 @@ const CreatePostModal = ({ onPostCreated }) => {
     // Get available cameras on mount
     const getCameras = async () => {
       try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+          console.warn('Camera API not supported');
+          return;
+        }
         const devices = await navigator.mediaDevices.enumerateDevices();
         const cameras = devices.filter(device => device.kind === 'videoinput');
         setCameraList(cameras);
