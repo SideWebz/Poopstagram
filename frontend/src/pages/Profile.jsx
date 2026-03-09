@@ -168,8 +168,25 @@ const Profile = ({ currentUser }) => {
         await authService.followUser(userId);
         setIsFollowing(true);
       }
+      
+      // Refresh the following status after successful toggle
+      const currentUserResponse = await authService.getProfile();
+      const isUserFollowed = currentUserResponse.data.following.some(
+        followedId => followedId.toString() === userId.toString()
+      );
+      setIsFollowing(isUserFollowed);
     } catch (error) {
       console.error('Error toggling follow:', error);
+      // If there's an error, refresh the actual state from the backend
+      try {
+        const currentUserResponse = await authService.getProfile();
+        const isUserFollowed = currentUserResponse.data.following.some(
+          followedId => followedId.toString() === userId.toString()
+        );
+        setIsFollowing(isUserFollowed);
+      } catch (refreshError) {
+        console.error('Error refreshing follow status:', refreshError);
+      }
     } finally {
       setIsFollowingLoading(false);
     }
