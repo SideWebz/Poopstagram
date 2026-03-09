@@ -80,7 +80,7 @@ const Home = ({ user }) => {
           </>
         ) : (
           <div style={{ textAlign: 'center', paddingTop: '3rem', color: '#8e8e8e' }}>
-            <p style={{ fontSize: '1rem' }}>No posts yet. Be the first to post!</p>
+            <p style={{ fontSize: '1rem' }}>No poops yet. Be the first to poop!</p>
           </div>
         )}
       </div>

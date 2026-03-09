@@ -246,27 +246,6 @@ const CreatePostModal = ({ onPostCreated }) => {
                     <i className="bi bi-cloud-upload" style={{ fontSize: '1.5rem' }}></i>
                     Upload File
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => startCamera(0)}
-                    style={{
-                      flex: 1,
-                      padding: '1rem',
-                      border: '2px solid #0095f6',
-                      background: 'white',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      borderRadius: '4px',
-                      color: '#0095f6',
-                      fontWeight: '600'
-                    }}
-                  >
-                    <i className="bi bi-camera" style={{ fontSize: '1.5rem' }}></i>
-                    Take Photo
-                  </button>
                 </div>
               )}
 

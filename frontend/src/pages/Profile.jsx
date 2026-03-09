@@ -85,7 +85,10 @@ const Profile = ({ currentUser }) => {
 
       // Check if current user is following this user
       const currentUserResponse = await authService.getProfile();
-      setIsFollowing(currentUserResponse.data.following.includes(userId));
+      const isUserFollowed = currentUserResponse.data.following.some(
+        followedId => followedId.toString() === userId.toString()
+      );
+      setIsFollowing(isUserFollowed);
     } catch (error) {
       console.error('Error fetching user profile:', error);
       setIsFollowing(false);
