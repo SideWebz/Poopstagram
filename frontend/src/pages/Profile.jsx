@@ -23,10 +23,13 @@ const Profile = ({ currentUser }) => {
   useEffect(() => {
     if (userId && userId !== currentUser?.id) {
       // Viewing another user's profile
+      setIsFollowing(false); // Reset follow state when switching profiles
+      setLoading(true);
       fetchOtherUserProfile();
       fetchUserPosts();
     } else {
       // Viewing own profile
+      setLoading(true);
       fetchUserProfile();
       fetchUserPosts();
     }
@@ -68,6 +71,8 @@ const Profile = ({ currentUser }) => {
       setProfilePicture(response.data.profilePicture || null);
     } catch (error) {
       console.error('Error fetching profile:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,6 +88,9 @@ const Profile = ({ currentUser }) => {
       setIsFollowing(currentUserResponse.data.following.includes(userId));
     } catch (error) {
       console.error('Error fetching user profile:', error);
+      setIsFollowing(false);
+    } finally {
+      setLoading(false);
     }
   };
 

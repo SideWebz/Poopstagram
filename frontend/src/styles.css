@@ -817,6 +817,17 @@ input[type='range']::-moz-range-thumb {
 
 .mobile-search-panel {
   display: none;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 70px;
+  background: white;
+  border-top: 1px solid #f0f0f0;
+  padding: 1rem;
+  z-index: 998;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 @media (max-width: 768px) {

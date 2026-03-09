@@ -44,12 +44,15 @@ const Navbar = ({ user, onLogout }) => {
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setShowResults(false);
+        // Close desktop search but not mobile search (which is a modal)
+        if (!showSearchMobile) {
+          setShowResults(false);
+        }
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [showSearchMobile]);
 
   const handleSelectUser = (userId, username) => {
     navigate(`/profile/${userId}`);
@@ -131,21 +134,21 @@ const Navbar = ({ user, onLogout }) => {
 
       {/* Mobile Search Panel */}
       {user && showSearchMobile && (
-        <div style={{
-          display: 'none',
+        <div className="mobile-search-panel" style={{
           position: 'fixed',
           top: '60px',
           left: 0,
           right: 0,
+          bottom: 0,
           background: 'white',
           borderBottom: '1px solid #f0f0f0',
           padding: '1rem',
           zIndex: 998,
-          '@media (max-width: 480px)': {
-            display: 'block'
-          }
-        }} className="mobile-search-panel">
-          <div style={{ display: 'flex', gap: '0.5rem' }} ref={searchRef}>
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'auto'
+        }}>
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }} ref={searchRef}>
             <input
               type="text"
               className="search-box"
@@ -175,7 +178,7 @@ const Navbar = ({ user, onLogout }) => {
             </button>
           </div>
           {showResults && searchResults && searchResults.length > 0 && (
-            <div className="search-results-dropdown" style={{ marginTop: '0.5rem' }}>
+            <div className="search-results-dropdown" style={{ position: 'static', marginTop: '0rem', border: 'none', boxShadow: 'none' }}>
               {searchResults.map(result => (
                 <div
                   key={result._id}
