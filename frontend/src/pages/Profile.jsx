@@ -24,22 +24,35 @@ const Profile = ({ currentUser }) => {
     const loadProfile = async () => {
       try {
         setLoading(true);
+        console.log('Loading profile - userId:', userId, 'currentUser?.id:', currentUser?.id);
+        
         if (userId && userId !== currentUser?.id) {
           // Viewing another user's profile
+          console.log('Viewing other user profile:', userId);
           const response = await authService.getUserProfile(userId);
+          console.log('User profile response:', response.data);
           setUser(response.data);
           setBio(response.data.bio || '');
           setProfilePicture(response.data.profilePicture || null);
           
-          // Check if currently following this user
-          if (currentUser?.id) {
-            const followingResponse = await authService.getFollowing(currentUser.id);
-            const followingList = followingResponse.data || [];
-            setIsFollowing(followingList.some(f => f._id === userId || f.id === userId));
+          // Check if currently following this user - check if currentUserId is in their followers
+          if (currentUser?.id && response.data.followers) {
+            console.log('Followers array:', response.data.followers);
+            console.log('Checking if', currentUser.id, 'is in followers');
+            const isFollowingThisUser = response.data.followers.some(
+              f => {
+                console.log('Comparing', f._id, 'with', currentUser.id, 'result:', f._id === currentUser.id);
+                return f._id === currentUser.id || f.id === currentUser.id;
+              }
+            );
+            console.log('Is following:', isFollowingThisUser);
+            setIsFollowing(isFollowingThisUser);
           }
         } else if (currentUser?.id) {
           // Viewing own profile
+          console.log('Viewing own profile');
           const response = await authService.getProfile();
+          console.log('Own profile response:', response.data);
           setUser(response.data);
           setBio(response.data.bio || '');
           setProfilePicture(response.data.profilePicture || null);
@@ -150,16 +163,36 @@ const Profile = ({ currentUser }) => {
   };
 
   const handleFollowToggle = async () => {
-    if (!user?._id || !currentUser?.id) return;
+    if (!user?._id || !currentUser?.id) {
+      console.error('Missing user or currentUser ID');
+      return;
+    }
     
     try {
       setFollowLoading(true);
+      console.log('Toggle follow - user._id:', user._id, 'isFollowing:', isFollowing);
+      
       if (isFollowing) {
+        console.log('Unfollowing user:', user._id);
         await authService.unfollowUser(user._id);
-        setIsFollowing(false);
       } else {
+        console.log('Following user:', user._id);
         await authService.followUser(user._id);
-        setIsFollowing(true);
+      }
+      
+      // Reload the profile to get updated follower counts
+      console.log('Reloading profile...');
+      const updatedUserResponse = await authService.getUserProfile(user._id);
+      console.log('Updated user response:', updatedUserResponse.data);
+      setUser(updatedUserResponse.data);
+      
+      // Update isFollowing status based on new data
+      if (updatedUserResponse.data.followers) {
+        const isNowFollowing = updatedUserResponse.data.followers.some(
+          f => f._id === currentUser.id || f.id === currentUser.id
+        );
+        console.log('Updated isFollowing:', isNowFollowing);
+        setIsFollowing(isNowFollowing);
       }
     } catch (error) {
       console.error('Error toggling follow:', error);
@@ -267,7 +300,7 @@ const Profile = ({ currentUser }) => {
             </div>
 
             <div className="profile-stats" style={{ 
-              gap: '3rem', 
+              gap: '2rem', 
               justifyContent: 'center',
               marginBottom: '1rem',
               marginTop: '1rem'
@@ -275,6 +308,18 @@ const Profile = ({ currentUser }) => {
               <div className="stat" style={{ alignItems: 'center', textAlign: 'center' }}>
                 <div className="stat-number" style={{ fontSize: '1.8rem' }}>{allPosts.length}</div>
                 <div className="stat-label">posts</div>
+              </div>
+              <div className="stat" style={{ alignItems: 'center', textAlign: 'center' }}>
+                <div className="stat-number" style={{ fontSize: '1.8rem' }}>
+                  {user?.followers?.length || 0}
+                </div>
+                <div className="stat-label">followers</div>
+              </div>
+              <div className="stat" style={{ alignItems: 'center', textAlign: 'center' }}>
+                <div className="stat-number" style={{ fontSize: '1.8rem' }}>
+                  {user?.following?.length || 0}
+                </div>
+                <div className="stat-label">following</div>
               </div>
               {user?.streak > 0 && (
                 <div className="stat" style={{ alignItems: 'center', textAlign: 'center' }}>
