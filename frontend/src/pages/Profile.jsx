@@ -15,6 +15,8 @@ const Profile = ({ currentUser }) => {
   const [uploadingPicture, setUploadingPicture] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [displayIndex, setDisplayIndex] = useState(0);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
   const loaderRef = useRef(null);
   const BATCH_SIZE = 5;
 
@@ -28,12 +30,20 @@ const Profile = ({ currentUser }) => {
           setUser(response.data);
           setBio(response.data.bio || '');
           setProfilePicture(response.data.profilePicture || null);
+          
+          // Check if currently following this user
+          if (currentUser?.id) {
+            const followingResponse = await authService.getFollowing(currentUser.id);
+            const followingList = followingResponse.data || [];
+            setIsFollowing(followingList.some(f => f._id === userId || f.id === userId));
+          }
         } else if (currentUser?.id) {
           // Viewing own profile
           const response = await authService.getProfile();
           setUser(response.data);
           setBio(response.data.bio || '');
           setProfilePicture(response.data.profilePicture || null);
+          setIsFollowing(false);
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -136,6 +146,25 @@ const Profile = ({ currentUser }) => {
       setSelectedPost(null);
     } catch (error) {
       console.error('Error deleting post:', error);
+    }
+  };
+
+  const handleFollowToggle = async () => {
+    if (!user?._id || !currentUser?.id) return;
+    
+    try {
+      setFollowLoading(true);
+      if (isFollowing) {
+        await authService.unfollowUser(user._id);
+        setIsFollowing(false);
+      } else {
+        await authService.followUser(user._id);
+        setIsFollowing(true);
+      }
+    } catch (error) {
+      console.error('Error toggling follow:', error);
+    } finally {
+      setFollowLoading(false);
     }
   };
 
@@ -374,7 +403,31 @@ const Profile = ({ currentUser }) => {
                   </div>
                 )}
               </>
-            ) : null}
+            ) : (
+              <div style={{ marginTop: '1rem' }}>
+                <button
+                  onClick={handleFollowToggle}
+                  disabled={followLoading}
+                  style={{
+                    width: '100%',
+                    padding: '0.65rem 1.5rem',
+                    background: isFollowing 
+                      ? 'white' 
+                      : 'linear-gradient(135deg, var(--accent) 0%, #0965d2 100%)',
+                    color: isFollowing ? 'var(--text)' : 'white',
+                    border: isFollowing ? '1px solid var(--border)' : 'none',
+                    cursor: followLoading ? 'not-allowed' : 'pointer',
+                    fontWeight: '600',
+                    borderRadius: '6px',
+                    fontSize: '0.95rem',
+                    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                    opacity: followLoading ? 0.6 : 1
+                  }}
+                >
+                  {followLoading ? 'Loading...' : (isFollowing ? 'Following' : 'Follow')}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -233,16 +233,8 @@ const Navbar = ({ user, onLogout }) => {
             >
               <i className="bi bi-house-fill"></i>
             </Link>
-            <button
-              onClick={() => setShowSearchMobile(!showSearchMobile)}
-              className={`mobile-nav-item ${showSearchMobile ? 'active' : ''}`}
-              title="Search"
-              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-            >
-              <i className="bi bi-search"></i>
-            </button>
             
-            {/* FAB Button - Create Post */}
+            {/* FAB Button - Create Post (Centered) */}
             <button
               onClick={() => {
                 const modal = document.getElementById('createPostModal');
@@ -255,6 +247,15 @@ const Navbar = ({ user, onLogout }) => {
               title="Create Post"
             >
               <i className="bi bi-plus"></i>
+            </button>
+            
+            <button
+              onClick={() => setShowSearchMobile(!showSearchMobile)}
+              className={`mobile-nav-item ${showSearchMobile ? 'active' : ''}`}
+              title="Search"
+              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              <i className="bi bi-search"></i>
             </button>
             
             <Link 

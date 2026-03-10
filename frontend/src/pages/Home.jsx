@@ -55,22 +55,19 @@ const Home = ({ user }) => {
       backgroundColor: '#f5f5f5', 
       minHeight: 'calc(100vh - 60px)', 
       paddingTop: '0.5rem',
-      paddingBottom: '80px'
+      paddingBottom: '70px'
     }}>
       <div className="feed-container" style={{ maxWidth: '100%' }}>
         {user && (
-          <div className="create-post-btn" style={{ 
-            display: 'none',
-            '@media (min-width: 481px)': { display: 'block' }
-          }}>
+          <div className="create-post-btn-desktop">
             <button onClick={openCreatePostModal} style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.75rem',
-              fontSize: '1rem',
+              fontSize: '0.95rem',
               fontWeight: '600',
-              padding: '0.85rem 2rem',
+              padding: '0.7rem 1.5rem',
               borderRadius: '8px'
             }}>
               <i className="bi bi-plus-circle-fill"></i>
