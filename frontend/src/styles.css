@@ -998,6 +998,10 @@ input[type='range']::-moz-range-thumb {
     padding-bottom: 75px;
   }
 
+  .create-post-btn {
+    display: none;
+  }
+
   header {
     padding: 0.4rem 0;
     position: sticky;

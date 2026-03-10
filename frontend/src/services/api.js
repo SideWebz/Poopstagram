@@ -30,11 +30,7 @@ export const authService = {
   updateProfile: (data) =>
     api.put('/auth/profile', data),
   searchUsers: (query) =>
-    api.get(`/auth/search?q=${encodeURIComponent(query)}`),
-  followUser: (userId) =>
-    api.post(`/auth/follow/${userId}`),
-  unfollowUser: (userId) =>
-    api.post(`/auth/unfollow/${userId}`)
+    api.get(`/auth/search?q=${encodeURIComponent(query)}`)
 };
 
 export const postService = {

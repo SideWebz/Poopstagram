@@ -15,8 +15,6 @@ const Profile = ({ currentUser }) => {
   const [uploadingPicture, setUploadingPicture] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [displayIndex, setDisplayIndex] = useState(0);
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [isFollowingLoading, setIsFollowingLoading] = useState(false);
   const loaderRef = useRef(null);
   const BATCH_SIZE = 5;
 
@@ -36,7 +34,6 @@ const Profile = ({ currentUser }) => {
           setUser(response.data);
           setBio(response.data.bio || '');
           setProfilePicture(response.data.profilePicture || null);
-          setIsFollowing(false);
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -46,32 +43,6 @@ const Profile = ({ currentUser }) => {
     };
     
     loadProfile();
-  }, [userId, currentUser?.id]);
-
-  // Check follow status when viewing another user's profile
-  useEffect(() => {
-    const checkFollowStatus = async () => {
-      if (userId && userId !== currentUser?.id && currentUser?.id) {
-        try {
-          const currentUserResponse = await authService.getProfile();
-          console.log('Current user following list:', currentUserResponse.data.following);
-          console.log('Target userId:', userId);
-          
-          const isFollowed = currentUserResponse.data.following.some(
-            followedId => followedId.toString() === userId.toString()
-          );
-          console.log('Is followed:', isFollowed);
-          setIsFollowing(isFollowed);
-        } catch (error) {
-          console.error('Error checking follow status:', error);
-          setIsFollowing(false);
-        }
-      } else {
-        setIsFollowing(false);
-      }
-    };
-
-    checkFollowStatus();
   }, [userId, currentUser?.id]);
 
   // Load posts
@@ -168,38 +139,6 @@ const Profile = ({ currentUser }) => {
     }
   };
 
-  const handleFollowToggle = async () => {
-    if (isFollowingLoading) return; // Prevent double clicks
-    
-    try {
-      setIsFollowingLoading(true);
-      
-      if (isFollowing) {
-        await authService.unfollowUser(userId);
-        // If successful, set to false
-        setIsFollowing(false);
-      } else {
-        await authService.followUser(userId);
-        // If successful, set to true
-        setIsFollowing(true);
-      }
-    } catch (error) {
-      console.error('Error toggling follow:', error);
-      // Recheck the actual status from backend on error
-      try {
-        const currentUserResponse = await authService.getProfile();
-        const isFollowed = currentUserResponse.data.following.some(
-          followedId => followedId.toString() === userId.toString()
-        );
-        setIsFollowing(isFollowed);
-      } catch (statusError) {
-        console.error('Error rechecking follow status:', statusError);
-      }
-    } finally {
-      setIsFollowingLoading(false);
-    }
-  };
-
   if (loading) {
     return (
       <div style={{ textAlign: 'center', paddingTop: '3rem' }}>
@@ -281,14 +220,6 @@ const Profile = ({ currentUser }) => {
                 <div className="stat-number">{allPosts.length}</div>
                 <div className="stat-label">posts</div>
               </div>
-              <div className="stat">
-                <div className="stat-number">{user?.followers?.length || 0}</div>
-                <div className="stat-label">followers</div>
-              </div>
-              <div className="stat">
-                <div className="stat-number">{user?.following?.length || 0}</div>
-                <div className="stat-label">following</div>
-              </div>
             </div>
 
             <div className="profile-bio">{user?.email}</div>
@@ -350,24 +281,7 @@ const Profile = ({ currentUser }) => {
                   </button>
                 )}
               </>
-            ) : (
-              // Follow/Unfollow button for other users
-              <button
-                className="btn-edit-profile"
-                onClick={handleFollowToggle}
-                disabled={isFollowingLoading}
-                style={{
-                  background: isFollowing ? '#ed4956' : '#0095f6',
-                  color: 'white',
-                  border: 'none',
-                  cursor: isFollowingLoading ? 'not-allowed' : 'pointer',
-                  opacity: isFollowingLoading ? 0.6 : 1,
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                {isFollowingLoading ? 'Loading...' : (isFollowing ? 'Unfollow' : 'Follow')}
-              </button>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
