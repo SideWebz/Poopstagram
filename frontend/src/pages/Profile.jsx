@@ -142,32 +142,45 @@ const Profile = ({ currentUser }) => {
   if (loading) {
     return (
       <div style={{ textAlign: 'center', paddingTop: '3rem' }}>
-        <div className="spinner"></div>
+        <div className="spinner" style={{
+          width: '40px',
+          height: '40px',
+          margin: '0 auto 1rem auto',
+          borderRadius: '50%',
+          border: '4px solid #f0f0f0',
+          borderTop: '4px solid var(--accent)',
+          animation: 'spin 1s linear infinite'
+        }}></div>
         <p>Loading profile...</p>
       </div>
     );
   }
 
   return (
-    <div style={{ backgroundColor: '#fafafa', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: '#f5f5f5', minHeight: '100vh', paddingBottom: '80px' }}>
       {/* Profile Header */}
-      <div className="profile-header">
-        <div className="profile-container">
+      <div className="profile-header" style={{ backgroundColor: 'white', borderBottom: '1px solid var(--border)' }}>
+        <div className="profile-container" style={{ maxWidth: '600px', margin: '0 auto' }}>
           {currentUser?.id === user?._id ? (
-            <label style={{ position: 'relative', cursor: 'pointer' }}>
+            <label style={{ position: 'relative', cursor: 'pointer', display: 'flex', justifyContent: 'center' }}>
               {profilePicture ? (
                 <img
                   src={profilePicture}
                   alt="Profile"
                   style={{
-                    width: '150px',
-                    height: '150px',
+                    width: '120px',
+                    height: '120px',
                     borderRadius: '50%',
                     objectFit: 'cover',
+                    boxShadow: 'var(--shadow-md)'
                   }}
                 />
               ) : (
-                <div className="profile-avatar">
+                <div className="profile-avatar" style={{
+                  width: '120px',
+                  height: '120px',
+                  fontSize: '2.5rem'
+                }}>
                   {(user?.username || 'U').charAt(0).toUpperCase()}
                 </div>
               )}
@@ -175,15 +188,17 @@ const Profile = ({ currentUser }) => {
                 position: 'absolute',
                 bottom: 0,
                 right: 0,
-                background: '#0095f6',
+                background: 'linear-gradient(135deg, var(--accent) 0%, #0965d2 100%)',
                 color: 'white',
-                width: '40px',
-                height: '40px',
+                width: '36px',
+                height: '36px',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: '2px solid white',
+                border: '3px solid white',
+                boxShadow: 'var(--shadow-md)',
+                fontSize: '1rem'
               }}>
                 <i className="bi bi-camera-fill"></i>
               </div>
@@ -200,29 +215,50 @@ const Profile = ({ currentUser }) => {
               src={profilePicture}
               alt="Profile"
               style={{
-                width: '150px',
-                height: '150px',
+                width: '120px',
+                height: '120px',
                 borderRadius: '50%',
                 objectFit: 'cover',
+                boxShadow: 'var(--shadow-md)'
               }}
             />
           ) : (
-            <div className="profile-avatar">
+            <div className="profile-avatar" style={{
+              width: '120px',
+              height: '120px',
+              fontSize: '2.5rem'
+            }}>
               {(user?.username || 'U').charAt(0).toUpperCase()}
             </div>
           )}
 
-          <div className="profile-info">
-            <div className="profile-username">{user?.username}</div>
+          <div className="profile-info" style={{ textAlign: 'center', flex: 1 }}>
+            <div className="profile-username" style={{ fontSize: '1.5rem', fontWeight: '600' }}>
+              {user?.username}
+            </div>
 
-            <div className="profile-stats">
-              <div className="stat">
-                <div className="stat-number">{allPosts.length}</div>
+            <div className="profile-stats" style={{ 
+              gap: '3rem', 
+              justifyContent: 'center',
+              marginBottom: '1rem',
+              marginTop: '1rem'
+            }}>
+              <div className="stat" style={{ alignItems: 'center', textAlign: 'center' }}>
+                <div className="stat-number" style={{ fontSize: '1.8rem' }}>{allPosts.length}</div>
                 <div className="stat-label">posts</div>
               </div>
               {user?.streak > 0 && (
-                <div className="stat">
-                  <div className="stat-number" style={{ color: '#ff6b6b', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <div className="stat" style={{ alignItems: 'center', textAlign: 'center' }}>
+                  <div className="stat-number" style={{ 
+                    fontSize: '1.8rem',
+                    background: 'linear-gradient(135deg, #ff6b6b 0%, #ff5b9c 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.3rem'
+                  }}>
                     🔥 {user.streak}
                   </div>
                   <div className="stat-label">streak</div>
@@ -230,63 +266,112 @@ const Profile = ({ currentUser }) => {
               )}
             </div>
 
-            <div className="profile-bio">{user?.email}</div>
+            <div className="profile-bio" style={{ 
+              color: 'var(--text-light)', 
+              fontSize: '0.9rem',
+              marginBottom: '0.5rem'
+            }}>
+              {user?.email}
+            </div>
             {(bio || isEditing) && (
-              <div className="profile-bio">{bio || 'No bio'}</div>
+              <div className="profile-bio" style={{ 
+                color: 'var(--text)',
+                fontSize: '0.95rem'
+              }}>
+                {bio || 'No bio'}
+              </div>
             )}
 
             {/* Bio Edit Section */}
             {currentUser?.id === user?._id ? (
               <>
                 {isEditing ? (
-                  <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '1rem' }}>
                     <input
                       type="text"
                       style={{
-                        flex: 1,
-                        padding: '0.5rem',
-                        border: '1px solid #ccc',
+                        width: '100%',
+                        padding: '0.75rem 1rem',
+                        border: '1px solid var(--border)',
                         fontSize: '0.9rem',
+                        borderRadius: '6px',
+                        backgroundColor: '#f5f5f5'
                       }}
                       value={bio}
                       onChange={(e) => setBio(e.target.value)}
                       placeholder="Enter bio"
                     />
-                    <button
-                      onClick={handleUpdateProfile}
-                      style={{
-                        padding: '0.5rem 1rem',
-                        background: '#0095f6',
-                        color: 'white',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontWeight: '600',
-                      }}
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => {
-                        setIsEditing(false);
-                        setBio(user?.bio || '');
-                      }}
-                      style={{
-                        padding: '0.5rem 1rem',
-                        background: 'white',
-                        border: '1px solid #ccc',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      Cancel
-                    </button>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <button
+                        onClick={handleUpdateProfile}
+                        style={{
+                          flex: 1,
+                          padding: '0.75rem 1rem',
+                          background: 'linear-gradient(135deg, var(--accent) 0%, #0965d2 100%)',
+                          color: 'white',
+                          border: 'none',
+                          cursor: 'pointer',
+                          fontWeight: '600',
+                          borderRadius: '6px',
+                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                        }}
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsEditing(false);
+                          setBio(user?.bio || '');
+                        }}
+                        style={{
+                          flex: 1,
+                          padding: '0.75rem 1rem',
+                          background: 'white',
+                          border: '1px solid var(--border)',
+                          cursor: 'pointer',
+                          borderRadius: '6px',
+                          fontWeight: '600',
+                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                 ) : (
-                  <button
-                    className="btn-edit-profile"
-                    onClick={() => setIsEditing(true)}
-                  >
-                    Edit Profile
-                  </button>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '1rem' }}>
+                    <button
+                      className="btn-edit-profile"
+                      onClick={() => setIsEditing(true)}
+                      style={{
+                        padding: '0.75rem 2rem',
+                        borderRadius: '6px',
+                        fontWeight: '600'
+                      }}
+                    >
+                      <i className="bi bi-pencil-fill" style={{ marginRight: '0.5rem' }}></i>
+                      Edit Profile
+                    </button>
+                    <button
+                      className="btn-edit-profile"
+                      onClick={() => {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        window.location.href = '/login';
+                      }}
+                      style={{
+                        background: 'var(--danger)',
+                        color: 'white',
+                        border: 'none',
+                        padding: '0.75rem 2rem',
+                        borderRadius: '6px',
+                        fontWeight: '600'
+                      }}
+                    >
+                      <i className="bi bi-box-arrow-right" style={{ marginRight: '0.5rem' }}></i>
+                      Logout
+                    </button>
+                  </div>
                 )}
               </>
             ) : null}
@@ -295,17 +380,17 @@ const Profile = ({ currentUser }) => {
       </div>
 
       {/* Posts Grid */}
-      <div className="profile-posts">
+      <div className="profile-posts" style={{ maxWidth: '100%' }}>
         {displayedPosts.length > 0 ? (
           <div className="posts-grid">
             {displayedPosts.map(post => (
               <div 
                 key={post._id} 
                 className="post-grid-item"
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', background: 'white' }}
                 onClick={() => setSelectedPost(post)}
               >
-                <img src={post.imageUrl} alt="Post" />
+                <img src={post.imageUrl} alt="Post" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 <div className="post-grid-overlay">
                   <div className="overlay-stat">
                     <i className="bi bi-heart-fill"></i>
@@ -321,8 +406,15 @@ const Profile = ({ currentUser }) => {
             {allPosts.length > displayedPosts.length && <div ref={loaderRef} style={{ gridColumn: '1 / -1', height: '40px' }} />}
           </div>
         ) : (
-          <div style={{ textAlign: 'center', paddingTop: '2rem', color: '#8e8e8e' }}>
-            <p>No posts yet</p>
+          <div style={{ 
+            textAlign: 'center', 
+            paddingTop: '4rem',
+            paddingBottom: '2rem',
+            color: 'var(--text-light)',
+            backgroundColor: 'white'
+          }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.5 }}>📸</div>
+            <p style={{ fontSize: '1rem' }}>No posts yet</p>
           </div>
         )}
       </div>
@@ -340,7 +432,8 @@ const Profile = ({ currentUser }) => {
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 1000,
-          padding: '1rem'
+          padding: '1rem',
+          animation: 'fadeIn 0.2s ease-out'
         }} onClick={() => setSelectedPost(null)}>
           <div style={{
             background: 'white',
@@ -348,21 +441,23 @@ const Profile = ({ currentUser }) => {
             maxWidth: '600px',
             maxHeight: '90vh',
             overflow: 'auto',
-            borderRadius: '0',
+            borderRadius: '12px',
             position: 'relative',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
           }} onClick={(e) => e.stopPropagation()}>
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              padding: '1rem',
-              borderBottom: '1px solid #f0f0f0',
+              padding: '1.25rem',
+              borderBottom: '1px solid var(--border)',
               background: 'white',
-              zIndex: 10
+              zIndex: 10,
+              borderRadius: '12px 12px 0 0'
             }}>
-              <h5 style={{ margin: 0, fontSize: '1rem', fontWeight: '600' }}>Post</h5>
+              <h5 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '600' }}>Post Details</h5>
               <button
                 onClick={() => setSelectedPost(null)}
                 style={{
@@ -370,45 +465,49 @@ const Profile = ({ currentUser }) => {
                   border: 'none',
                   fontSize: '1.5rem',
                   cursor: 'pointer',
-                  color: '#8e8e8e'
+                  color: 'var(--text-light)',
+                  transition: 'all 0.2s'
                 }}
               >
                 <i className="bi bi-x-lg"></i>
               </button>
             </div>
-            <div style={{ flex: 1, overflow: 'auto', padding: '1rem' }}>
-              <img src={selectedPost.imageUrl} alt="Post" style={{ width: '100%', marginBottom: '1rem' }} />
+            <div style={{ flex: 1, overflow: 'auto', padding: '1.25rem' }}>
+              <img src={selectedPost.imageUrl} alt="Post" style={{ width: '100%', marginBottom: '1rem', borderRadius: '8px' }} />
               {selectedPost.caption && (
-                <p style={{ marginBottom: '1rem', color: '#262626', lineHeight: '1.5' }}>{selectedPost.caption}</p>
+                <p style={{ marginBottom: '1rem', color: 'var(--text)', lineHeight: '1.5', fontSize: '0.95rem' }}>{selectedPost.caption}</p>
               )}
-              <div style={{ color: '#8e8e8e', fontSize: '0.85rem', marginBottom: '1rem', display: 'flex', gap: '1rem' }}>
-                <span><i className="bi bi-heart-fill" style={{ color: '#ed4956', marginRight: '0.25rem' }}></i>{selectedPost.likes?.length || 0} likes</span>
-                <span><i className="bi bi-chat" style={{ marginRight: '0.25rem' }}></i>{selectedPost.comments?.length || 0}</span>
-                <span>{new Date(selectedPost.createdAt).toLocaleDateString()}</span>
+              <div style={{ color: 'var(--text-light)', fontSize: '0.85rem', marginBottom: '1rem', display: 'flex', gap: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}>
+                <span><i className="bi bi-heart-fill" style={{ color: 'var(--danger)', marginRight: '0.5rem' }}></i>{selectedPost.likes?.length || 0}</span>
+                <span><i className="bi bi-chat" style={{ marginRight: '0.5rem' }}></i>{selectedPost.comments?.length || 0}</span>
+                <span><i className="bi bi-calendar" style={{ marginRight: '0.5rem' }}></i>{new Date(selectedPost.createdAt).toLocaleDateString()}</span>
               </div>
               {selectedPost.ratings && selectedPost.ratings.length > 0 && (
-                <div style={{ color: '#8e8e8e', fontSize: '0.85rem', marginBottom: '1rem' }}>
-                  <i className="bi bi-fire" style={{ marginRight: '0.25rem' }}></i>
-                  {Math.round(selectedPost.ratings.reduce((sum, r) => sum + r.score, 0) / selectedPost.ratings.length)}% Average Juicy Shit ({selectedPost.ratings.length} ratings)
+                <div style={{ color: 'var(--text)', fontSize: '0.9rem', marginBottom: '1rem', padding: '1rem', backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
+                  <i className="bi bi-fire" style={{ marginRight: '0.5rem', color: '#ff6b6b' }}></i>
+                  <strong>{Math.round(selectedPost.ratings.reduce((sum, r) => sum + r.score, 0) / selectedPost.ratings.length)}%</strong> Average Juicy Shit ({selectedPost.ratings.length} {selectedPost.ratings.length === 1 ? 'rating' : 'ratings'})
                 </div>
               )}
-              <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: '1rem' }}>
-                <h6 style={{ marginBottom: '1rem', fontSize: '0.95rem', fontWeight: '600' }}>Comments ({selectedPost.comments?.length || 0})</h6>
+              <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
+                <h6 style={{ marginBottom: '1rem', fontSize: '0.95rem', fontWeight: '600' }}>
+                  <i className="bi bi-chat-dots" style={{ marginRight: '0.5rem' }}></i>
+                  Comments ({selectedPost.comments?.length || 0})
+                </h6>
                 {selectedPost.comments && selectedPost.comments.length > 0 ? (
                   selectedPost.comments.map(comment => (
                     <div key={comment._id} style={{ marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid #f0f0f0', fontSize: '0.9rem' }}>
-                      <div><strong>{comment.author?.username}</strong> {comment.text}</div>
-                      <div style={{ fontSize: '0.75rem', color: '#8e8e8e', marginTop: '0.25rem' }}>
+                      <div><strong style={{ color: 'var(--text)' }}>{comment.author?.username}</strong> <span style={{ color: 'var(--text-secondary)' }}>{comment.text}</span></div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
                         {new Date(comment.createdAt).toLocaleDateString()} • <i className="bi bi-heart" style={{ marginRight: '0.25rem' }}></i>{comment.likes?.length || 0}
                       </div>
                     </div>
                   ))
                 ) : (
-                  <p style={{ color: '#8e8e8e', fontSize: '0.9rem' }}>No comments yet</p>
+                  <p style={{ color: 'var(--text-light)', fontSize: '0.9rem' }}>No comments yet</p>
                 )}
               </div>
               {currentUser?.id === user?._id && (
-                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #f0f0f0' }}>
+                <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}>
                   <button
                     onClick={() => {
                       handlePostDelete(selectedPost._id);
@@ -417,14 +516,17 @@ const Profile = ({ currentUser }) => {
                     style={{
                       width: '100%',
                       padding: '0.75rem',
-                      background: '#ed4956',
+                      background: 'var(--danger)',
                       color: 'white',
                       border: 'none',
                       cursor: 'pointer',
-                      fontWeight: '600'
+                      fontWeight: '600',
+                      borderRadius: '6px',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                     }}
                   >
-                    <i className="bi bi-trash" style={{ marginRight: '0.5rem' }}></i> Delete Post
+                    <i className="bi bi-trash" style={{ marginRight: '0.5rem' }}></i>
+                    Delete Post
                   </button>
                 </div>
               )}
@@ -432,6 +534,12 @@ const Profile = ({ currentUser }) => {
           </div>
         </div>
       )}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 };

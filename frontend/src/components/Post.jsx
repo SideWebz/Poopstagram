@@ -110,12 +110,10 @@ const Post = ({ post, currentUser, onPostUpdate, onPostDelete }) => {
     }
   };
 
-  const visibleComments = showAllComments ? comments : comments.slice(-3);
-
   return (
-    <div className="post-card">
+    <div className="post-card" style={{ marginBottom: '0.5rem' }}>
       {/* Post Header */}
-      <div className="post-header">
+      <div className="post-header" style={{ padding: '0.75rem 1rem' }}>
         <div className="post-header-left">
           {post.author?.profilePicture ? (
             <img
@@ -130,8 +128,10 @@ const Post = ({ post, currentUser, onPostUpdate, onPostDelete }) => {
             </div>
           )}
           <div className="post-author-info">
-            <div className="post-author">{post.author?.username || 'Unknown'}</div>
-            <div className="post-time">
+            <div className="post-author" style={{ fontWeight: '700', fontSize: '0.95rem' }}>
+              {post.author?.username || 'Unknown'}
+            </div>
+            <div className="post-time" style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>
               {new Date(post.createdAt).toLocaleDateString()} • {new Date(post.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </div>
           </div>
@@ -141,7 +141,7 @@ const Post = ({ post, currentUser, onPostUpdate, onPostDelete }) => {
             className="post-delete-btn"
             onClick={handleDeletePost}
             title="Delete post"
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#8e8e8e' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: 'var(--text-light)', padding: '0.25rem' }}
           >
             <i className="bi bi-three-dots-vertical"></i>
           </button>
@@ -149,32 +149,70 @@ const Post = ({ post, currentUser, onPostUpdate, onPostDelete }) => {
       </div>
 
       {/* Post Image */}
-      <img src={post.imageUrl} alt="Post" className="post-image" />
+      <img src={post.imageUrl} alt="Post" className="post-image" style={{ width: '100%', display: 'block' }} />
 
       {/* Post Stats */}
-      <div className="post-stats">
-        {likes} likes
+      <div className="post-stats" style={{ 
+        padding: '0.75rem 1rem', 
+        fontSize: '0.85rem',
+        fontWeight: '600',
+        borderBottom: '1px solid var(--border)'
+      }}>
+        <i className="bi bi-heart-fill" style={{ color: 'var(--danger)', marginRight: '0.5rem' }}></i>
+        {likes} {likes === 1 ? 'like' : 'likes'}
       </div>
 
       {/* Post Caption */}
       {post.caption && (
-        <div className="post-caption">
+        <div className="post-caption" style={{
+          padding: '1rem',
+          fontSize: '0.95rem',
+          lineHeight: '1.5',
+          color: 'var(--text)',
+          borderBottom: '1px solid var(--border)',
+          wordWrap: 'break-word'
+        }}>
+          <strong style={{ marginRight: '0.5rem' }}>{post.author?.username}</strong>
           {post.caption}
         </div>
       )}
 
       {/* Post Actions */}
-      <div className="post-actions">
+      <div className="post-actions" style={{ 
+        padding: '0.75rem 1rem', 
+        gap: '1rem',
+        borderBottom: '1px solid var(--border)'
+      }}>
         <button
           className="post-action-btn"
           onClick={handleLike}
           disabled={loading}
           title={isLiked ? 'Unlike' : 'Like'}
+          style={{
+            padding: '0.5rem 0',
+            fontSize: '1.2rem',
+            color: isLiked ? 'var(--danger)' : 'var(--text)',
+            transition: 'all 0.2s'
+          }}
         >
-          <i className={`bi ${isLiked ? 'bi-heart-fill' : 'bi-heart'}`} style={{ color: isLiked ? '#ed4956' : 'inherit' }}></i>
+          <i className={`bi ${isLiked ? 'bi-heart-fill' : 'bi-heart'}`}></i>
         </button>
-        <button className="post-action-btn" title="Comment">
+        <button className="post-action-btn" title="Comment" style={{
+          padding: '0.5rem 0',
+          fontSize: '1.2rem',
+          color: 'var(--text)',
+          transition: 'all 0.2s'
+        }}>
           <i className="bi bi-chat"></i>
+        </button>
+        <button className="post-action-btn" style={{
+          padding: '0.5rem 0',
+          fontSize: '1.2rem',
+          color: 'var(--text)',
+          transition: 'all 0.2s',
+          marginLeft: 'auto'
+        }}>
+          <i className="bi bi-bookmark"></i>
         </button>
       </div>
 
@@ -182,28 +220,27 @@ const Post = ({ post, currentUser, onPostUpdate, onPostDelete }) => {
       {hasRated ? (
         <div style={{
           padding: '1rem',
-          borderBottom: '1px solid #ccc',
-          borderTop: '1px solid #ccc',
-          textAlign: 'center'
+          borderBottom: '1px solid var(--border)',
+          textAlign: 'center',
+          background: '#f5f5f5'
         }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '0.5rem',
-            fontSize: '0.9rem',
-            color: '#666'
+            gap: '0.75rem',
+            fontSize: '0.9rem'
           }}>
-            <i className="bi bi-fire" style={{ fontSize: '1rem' }}></i>
+            <i className="bi bi-fire" style={{ fontSize: '1.1rem', color: '#ff6b6b' }}></i>
             <span><strong>{averageScore}%</strong> Average Juicy Shit</span>
-            <span style={{ fontSize: '0.8rem', color: '#999' }}>({post.ratings?.length} ratings)</span>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>({post.ratings?.length})</span>
           </div>
         </div>
       ) : (
         <div style={{
           padding: '1rem',
-          borderBottom: '1px solid #ccc',
-          borderTop: '1px solid #ccc'
+          borderBottom: '1px solid var(--border)',
+          background: '#f5f5f5'
         }}>
           <div style={{
             display: 'flex',
@@ -213,12 +250,12 @@ const Post = ({ post, currentUser, onPostUpdate, onPostDelete }) => {
             fontSize: '0.85rem'
           }}>
             <span style={{ fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <i className="bi bi-fire"></i> Rate this Shit
+              <i className="bi bi-fire" style={{ color: '#ff6b6b' }}></i> Rate this Shit
             </span>
             <span style={{
-              background: '#0095f6',
+              background: 'linear-gradient(135deg, var(--accent) 0%, #0965d2 100%)',
               color: 'white',
-              padding: '0.25rem 0.75rem',
+              padding: '0.35rem 0.85rem',
               borderRadius: '20px',
               fontSize: '0.8rem',
               fontWeight: '600'
@@ -242,32 +279,35 @@ const Post = ({ post, currentUser, onPostUpdate, onPostDelete }) => {
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
-            marginTop: '0.5rem',
+            marginTop: '0.75rem',
             fontSize: '0.75rem',
-            color: '#8e8e8e'
+            color: 'var(--text-light)',
+            fontWeight: '500'
           }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
               <i className="bi bi-exclamation-circle"></i> Shit
             </span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-              Juicy Shit <i className="bi bi-star-fill"></i>
+              Juicy Shit <i className="bi bi-star-fill" style={{ color: '#FFD700' }}></i>
             </span>
           </div>
           <button
             onClick={handleSubmitRating}
             style={{
               width: '100%',
-              marginTop: '0.75rem',
-              padding: '0.5rem',
-              background: '#0095f6',
+              marginTop: '0.85rem',
+              padding: '0.65rem',
+              background: 'linear-gradient(135deg, var(--accent) 0%, #0965d2 100%)',
               color: 'white',
               border: 'none',
-              borderRadius: '4px',
+              borderRadius: '6px',
               cursor: 'pointer',
               fontWeight: '600',
-              fontSize: '0.9rem'
+              fontSize: '0.9rem',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
             }}
           >
+            <i className="bi bi-check-circle" style={{ marginRight: '0.5rem' }}></i>
             Submit Rating
           </button>
         </div>
@@ -280,25 +320,28 @@ const Post = ({ post, currentUser, onPostUpdate, onPostDelete }) => {
             {comments.length > 3 && !showAllComments && (
               <div style={{
                 padding: '0.75rem 1rem',
-                color: '#0095f6',
+                color: 'var(--accent)',
                 cursor: 'pointer',
                 fontSize: '0.85rem',
                 fontWeight: '600',
                 textAlign: 'center',
-                borderBottom: '1px solid #ccc'
+                borderBottom: '1px solid var(--border)',
+                background: '#f5f5f5'
               }} onClick={() => setShowAllComments(true)}>
+                <i className="bi bi-chat-dots" style={{ marginRight: '0.5rem' }}></i>
                 View all {comments.length} comments
               </div>
             )}
             {visibleComments.map(comment => (
               <div key={comment._id} style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #f0f0f0' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem' }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '0.9rem' }}>
-                      <strong>{comment.author?.username}</strong> {comment.text}
+                    <div style={{ fontSize: '0.9rem', lineHeight: '1.4' }}>
+                      <strong style={{ color: 'var(--text)' }}>{comment.author?.username}</strong>{' '}
+                      <span style={{ color: 'var(--text-secondary)' }}>{comment.text}</span>
                     </div>
-                    <div style={{ display: 'flex', gap: '1rem', marginTop: '0.4rem', fontSize: '0.75rem' }}>
-                      <span style={{ color: '#8e8e8e' }}>
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', fontSize: '0.75rem' }}>
+                      <span style={{ color: 'var(--text-light)' }}>
                         {new Date(comment.createdAt).toLocaleDateString()}
                       </span>
                       <button
@@ -311,7 +354,8 @@ const Post = ({ post, currentUser, onPostUpdate, onPostDelete }) => {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '0.25rem',
-                          color: commentUserLikes[comment._id] ? '#ed4956' : '#8e8e8e'
+                          color: commentUserLikes[comment._id] ? 'var(--danger)' : 'var(--text-light)',
+                          transition: 'all 0.2s'
                         }}
                         title="Like comment"
                       >
@@ -327,9 +371,10 @@ const Post = ({ post, currentUser, onPostUpdate, onPostDelete }) => {
                         background: 'none',
                         border: 'none',
                         cursor: 'pointer',
-                        color: '#8e8e8e',
-                        fontSize: '1rem',
-                        padding: '0 0.5rem'
+                        color: 'var(--text-light)',
+                        fontSize: '0.9rem',
+                        padding: '0 0.25rem',
+                        transition: 'all 0.2s'
                       }}
                       title="Delete comment"
                     >
@@ -344,17 +389,41 @@ const Post = ({ post, currentUser, onPostUpdate, onPostDelete }) => {
 
         {/* Comment Input */}
         {currentUser && (
-          <form onSubmit={handleAddComment} className="comment-form">
+          <form onSubmit={handleAddComment} className="comment-form" style={{
+            padding: '0.75rem 1rem',
+            borderTop: '1px solid var(--border)',
+            display: 'flex',
+            gap: '0.75rem',
+            alignItems: 'center'
+          }}>
             <input
               type="text"
               placeholder="Add a comment..."
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               disabled={loading}
+              style={{
+                flex: 1,
+                border: 'none',
+                background: 'transparent',
+                fontSize: '0.9rem',
+                outline: 'none',
+                color: 'var(--text)'
+              }}
             />
             <button
               type="submit"
               disabled={loading || !newComment.trim()}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: newComment.trim() ? 'var(--accent)' : 'var(--text-light)',
+                fontWeight: '600',
+                cursor: newComment.trim() ? 'pointer' : 'not-allowed',
+                fontSize: '0.9rem',
+                padding: '0',
+                transition: 'all 0.2s'
+              }}
             >
               Post
             </button>

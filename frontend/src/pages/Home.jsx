@@ -51,21 +51,46 @@ const Home = ({ user }) => {
   };
 
   return (
-    <div style={{ backgroundColor: '#fafafa', minHeight: 'calc(100vh - 60px)', paddingTop: '2rem' }}>
-      <div className="feed-container">
+    <div style={{ 
+      backgroundColor: '#f5f5f5', 
+      minHeight: 'calc(100vh - 60px)', 
+      paddingTop: '0.5rem',
+      paddingBottom: '80px'
+    }}>
+      <div className="feed-container" style={{ maxWidth: '100%' }}>
         {user && (
-          <div className="create-post-btn">
-            <button onClick={openCreatePostModal}>
-              <i className="bi bi-plus-circle" style={{ marginRight: '0.5rem' }}></i>
+          <div className="create-post-btn" style={{ 
+            display: 'none',
+            '@media (min-width: 481px)': { display: 'block' }
+          }}>
+            <button onClick={openCreatePostModal} style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.75rem',
+              fontSize: '1rem',
+              fontWeight: '600',
+              padding: '0.85rem 2rem',
+              borderRadius: '8px'
+            }}>
+              <i className="bi bi-plus-circle-fill"></i>
               Create Post
             </button>
           </div>
         )}
 
         {loading && !posts.length ? (
-          <div style={{ textAlign: 'center', paddingTop: '2rem' }}>
-            <div className="spinner"></div>
-            <p>Loading posts...</p>
+          <div style={{ textAlign: 'center', paddingTop: '3rem', paddingBottom: '2rem' }}>
+            <div className="spinner" style={{
+              width: '40px',
+              height: '40px',
+              margin: '0 auto 1rem auto',
+              borderRadius: '50%',
+              border: '4px solid #f0f0f0',
+              borderTop: '4px solid var(--accent)',
+              animation: 'spin 1s linear infinite'
+            }}></div>
+            <p style={{ color: 'var(--text-light)', fontSize: '0.95rem' }}>Loading posts...</p>
           </div>
         ) : visiblePosts.length > 0 ? (
           <>
@@ -79,11 +104,43 @@ const Home = ({ user }) => {
             ))}
           </>
         ) : (
-          <div style={{ textAlign: 'center', paddingTop: '3rem', color: '#8e8e8e' }}>
-            <p style={{ fontSize: '1rem' }}>No poops yet. Be the first to poop!</p>
+          <div style={{
+            textAlign: 'center',
+            paddingTop: '4rem',
+            paddingBottom: '3rem',
+            backgroundColor: 'white',
+            margin: '1rem 0.5rem',
+            borderRadius: '8px'
+          }}>
+            <div style={{
+              fontSize: '4rem',
+              marginBottom: '1rem',
+              opacity: 0.5
+            }}>
+              💩
+            </div>
+            <h2 style={{
+              fontSize: '1.3rem',
+              fontWeight: '600',
+              marginBottom: '0.5rem'
+            }}>
+              No posts yet
+            </h2>
+            <p style={{
+              color: 'var(--text-light)',
+              fontSize: '0.95rem'
+            }}>
+              Be the first to share your shit!
+            </p>
           </div>
         )}
       </div>
+      <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

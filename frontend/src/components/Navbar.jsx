@@ -264,14 +264,6 @@ const Navbar = ({ user, onLogout }) => {
             >
               <i className="bi bi-person-circle"></i>
             </Link>
-            <button
-              onClick={handleLogout}
-              className="mobile-nav-item"
-              title="Logout"
-              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-            >
-              <i className="bi bi-box-arrow-right"></i>
-            </button>
           </nav>
         </>
       )}

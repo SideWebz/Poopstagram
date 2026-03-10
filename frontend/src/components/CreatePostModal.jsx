@@ -141,23 +141,37 @@ const CreatePostModal = ({ onPostCreated }) => {
   };
 
   return (
-    <div className="modal fade" id="createPostModal" tabIndex="-1">
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header border-bottom">
-            <h5 className="modal-title">Share Your Shit</h5>
+    <div className="modal fade" id="createPostModal" tabIndex="-1" style={{ backdropFilter: 'blur(10px)' }}>
+      <div className="modal-dialog" style={{ maxWidth: '600px' }}>
+        <div className="modal-content" style={{ borderRadius: '12px', boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)' }}>
+          <div className="modal-header" style={{ 
+            borderBottom: '1px solid var(--border)',
+            padding: '1.25rem',
+            background: 'white'
+          }}>
+            <h5 className="modal-title" style={{ fontWeight: '700', fontSize: '1.1rem' }}>
+              <i className="bi bi-plus-circle-fill" style={{ marginRight: '0.75rem', color: 'var(--accent)' }}></i>
+              Share Your Shit
+            </h5>
             <button
               type="button"
               className="btn-close"
               data-bs-dismiss="modal"
               onClick={() => stopCamera()}
+              style={{ fontSize: '1.2rem' }}
             ></button>
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="modal-body">
+            <div className="modal-body" style={{ padding: '1.5rem' }}>
               {error && (
-                <div className="alert alert-danger mb-3">{error}</div>
+                <div className="alert alert-danger mb-3" style={{ 
+                  borderRadius: '6px',
+                  border: '1px solid #ff6b6b'
+                }}>
+                  <i className="bi bi-exclamation-circle" style={{ marginRight: '0.5rem' }}></i>
+                  {error}
+                </div>
               )}
 
               {cameraActive && (
@@ -166,27 +180,33 @@ const CreatePostModal = ({ onPostCreated }) => {
                     ref={videoRef}
                     style={{
                       width: '100%',
-                      borderRadius: '4px',
-                      marginBottom: '0.5rem'
+                      borderRadius: '8px',
+                      marginBottom: '1rem',
+                      maxHeight: '400px',
+                      backgroundColor: '#000',
+                      display: 'block'
                     }}
                   />
                   <canvas ref={canvasRef} style={{ display: 'none' }} />
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                     <button
                       type="button"
                       onClick={capturePhoto}
                       style={{
                         flex: 1,
-                        padding: '0.75rem',
-                        background: '#0095f6',
+                        minWidth: '140px',
+                        padding: '0.75rem 1rem',
+                        background: 'linear-gradient(135deg, var(--accent) 0%, #0965d2 100%)',
                         color: 'white',
                         border: 'none',
-                        borderRadius: '4px',
+                        borderRadius: '6px',
                         cursor: 'pointer',
-                        fontWeight: '600'
+                        fontWeight: '600',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                       }}
                     >
-                      <i className="bi bi-camera-fill"></i> Capture
+                      <i className="bi bi-camera-fill" style={{ marginRight: '0.5rem' }}></i>
+                      Capture
                     </button>
                     {cameraList.length > 1 && (
                       <button
@@ -194,11 +214,12 @@ const CreatePostModal = ({ onPostCreated }) => {
                         onClick={switchCamera}
                         style={{
                           padding: '0.75rem 1rem',
-                          background: '#f0f0f0',
-                          border: '1px solid #ccc',
-                          borderRadius: '4px',
+                          background: 'white',
+                          border: '1px solid var(--border)',
+                          borderRadius: '6px',
                           cursor: 'pointer',
-                          fontWeight: '600'
+                          fontWeight: '600',
+                          transition: 'all 0.3s'
                         }}
                         title="Switch camera"
                       >
@@ -210,11 +231,12 @@ const CreatePostModal = ({ onPostCreated }) => {
                       onClick={stopCamera}
                       style={{
                         padding: '0.75rem 1rem',
-                        background: '#f0f0f0',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
+                        background: 'white',
+                        border: '1px solid var(--border)',
+                        borderRadius: '6px',
                         cursor: 'pointer',
-                        fontWeight: '600'
+                        fontWeight: '600',
+                        transition: 'all 0.3s'
                       }}
                     >
                       <i className="bi bi-x-lg"></i>
@@ -226,6 +248,7 @@ const CreatePostModal = ({ onPostCreated }) => {
               {!imagePreview && !cameraActive && (
                 <div style={{
                   display: 'flex',
+                  flexDirection: 'column',
                   gap: '1rem',
                   marginBottom: '1.5rem'
                 }}>
@@ -233,21 +256,194 @@ const CreatePostModal = ({ onPostCreated }) => {
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     style={{
-                      flex: 1,
-                      padding: '1rem',
-                      border: '2px solid #0095f6',
-                      background: 'white',
+                      padding: '2rem',
+                      border: '2px dashed var(--accent)',
+                      background: 'linear-gradient(135deg, rgba(10, 124, 255, 0.05) 0%, rgba(9, 101, 210, 0.05) 100%)',
                       cursor: 'pointer',
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
-                      gap: '0.5rem',
-                      borderRadius: '4px',
-                      color: '#0095f6',
-                      fontWeight: '600'
+                      gap: '0.75rem',
+                      borderRadius: '8px',
+                      color: 'var(--accent)',
+                      fontWeight: '600',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                    }}
+                    onMouseEnter={(e) => e.target.style.background = 'rgba(10, 124, 255, 0.10)'}
+                    onMouseLeave={(e) => e.target.style.background = 'linear-gradient(135deg, rgba(10, 124, 255, 0.05) 0%, rgba(9, 101, 210, 0.05) 100%)'}
+                  >
+                    <i className="bi bi-cloud-upload" style={{ fontSize: '2rem' }}></i>
+                    <span>Upload Photo</span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>or drag and drop</span>
+                  </button>
+                </div>
+              )}
+
+              {!imagePreview && !cameraActive && (
+                <div style={{
+                  display: 'flex',
+                  gap: '1rem',
+                  paddingTop: '1rem',
+                  borderTop: '1px solid var(--border)'
+                }}>
+                  <button
+                    type="button"
+                    onClick={() => startCamera()}
+                    style={{
+                      flex: 1,
+                      padding: '0.85rem 1rem',
+                      background: 'white',
+                      border: '1px solid var(--border)',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontWeight: '600',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                     }}
                   >
-                    <i className="bi bi-cloud-upload" style={{ fontSize: '1.5rem' }}></i>
+                    <i className="bi bi-camera" style={{ marginRight: '0.5rem' }}></i>
+                    Take Photo
+                  </button>
+                </div>
+              )}
+
+              {imagePreview && !cameraActive && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setImagePreview('');
+                    setImageUrl('');
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '0.65rem',
+                    marginBottom: '1rem',
+                    background: '#f5f5f5',
+                    border: '1px solid var(--border)',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem',
+                    borderRadius: '6px',
+                    fontWeight: '600',
+                    transition: 'all 0.3s'
+                  }}
+                >
+                  <i className="bi bi-arrow-clockwise" style={{ marginRight: '0.5rem' }}></i>
+                  Change Photo
+                </button>
+              )}
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
+              />
+
+              {imagePreview && (
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  style={{
+                    maxHeight: '350px',
+                    width: '100%',
+                    objectFit: 'cover',
+                    marginBottom: '1.5rem',
+                    borderRadius: '8px',
+                    boxShadow: 'var(--shadow-md)'
+                  }}
+                />
+              )}
+
+              {imagePreview && (
+                <div style={{ marginTop: '1rem' }}>
+                  <label style={{
+                    display: 'block',
+                    fontWeight: '600',
+                    marginBottom: '0.75rem',
+                    fontSize: '0.95rem',
+                    color: 'var(--text)'
+                  }}>
+                    Write a caption... <span style={{ color: 'var(--text-light)', fontWeight: '400' }}>(optional)</span>
+                  </label>
+                  <textarea
+                    value={caption}
+                    onChange={(e) => setCaption(e.target.value)}
+                    placeholder="Tell us about your shit..."
+                    style={{
+                      width: '100%',
+                      padding: '0.85rem 1rem',
+                      border: '1px solid var(--border)',
+                      borderRadius: '6px',
+                      fontFamily: 'inherit',
+                      fontSize: '0.95rem',
+                      minHeight: '100px',
+                      resize: 'vertical',
+                      color: 'var(--text)',
+                      backgroundColor: '#f5f5f5'
+                    }}
+                  />
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '0.5rem' }}>
+                    {caption.length} / 500 characters
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {imagePreview && (
+              <div className="modal-footer" style={{
+                borderTop: '1px solid var(--border)',
+                padding: '1rem',
+                background: '#f5f5f5',
+                borderRadius: '0 0 12px 12px'
+              }}>
+                <button
+                  type="button"
+                  style={{
+                    padding: '0.75rem 1.5rem',
+                    border: '1px solid var(--border)',
+                    background: 'white',
+                    cursor: 'pointer',
+                    borderRadius: '6px',
+                    fontWeight: '600'
+                  }}
+                  data-bs-dismiss="modal"
+                  onClick={() => stopCamera()}
+                >
+                  <i className="bi bi-x-lg" style={{ marginRight: '0.5rem' }}></i>
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  style={{
+                    padding: '0.75rem 2rem',
+                    border: 'none',
+                    background: imageUrl && !loading ? 'linear-gradient(135deg, var(--accent) 0%, #0965d2 100%)' : 'var(--text-light)',
+                    color: 'white',
+                    cursor: imageUrl && !loading ? 'pointer' : 'not-allowed',
+                    borderRadius: '6px',
+                    fontWeight: '600',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                  }}
+                  disabled={loading || !imageUrl}
+                >
+                  {loading ? (
+                    <>
+                      <i className="bi bi-hourglass-split" style={{ marginRight: '0.5rem' }}></i>
+                      Posting...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-send-fill" style={{ marginRight: '0.5rem' }}></i>
+                      Share
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+          </form>
+        </div>
+      </div>
+    </div>
                     Upload File
                   </button>
                 </div>
