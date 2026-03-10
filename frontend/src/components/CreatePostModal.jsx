@@ -279,33 +279,6 @@ const CreatePostModal = ({ onPostCreated }) => {
                 </div>
               )}
 
-              {!imagePreview && !cameraActive && (
-                <div style={{
-                  display: 'flex',
-                  gap: '1rem',
-                  paddingTop: '1rem',
-                  borderTop: '1px solid var(--border)'
-                }}>
-                  <button
-                    type="button"
-                    onClick={() => startCamera()}
-                    style={{
-                      flex: 1,
-                      padding: '0.85rem 1rem',
-                      background: 'white',
-                      border: '1px solid var(--border)',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontWeight: '600',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                    }}
-                  >
-                    <i className="bi bi-camera" style={{ marginRight: '0.5rem' }}></i>
-                    Take Photo
-                  </button>
-                </div>
-              )}
-
               {imagePreview && !cameraActive && (
                 <button
                   type="button"
