@@ -357,14 +357,15 @@ const Profile = ({ currentUser }) => {
                 onClick={handleFollowToggle}
                 disabled={isFollowingLoading}
                 style={{
-                  background: isFollowing ? 'white' : '#0095f6',
-                  color: isFollowing ? '#0095f6' : 'white',
-                  border: isFollowing ? '1px solid #0095f6' : 'none',
+                  background: isFollowing ? '#ed4956' : '#0095f6',
+                  color: 'white',
+                  border: 'none',
                   cursor: isFollowingLoading ? 'not-allowed' : 'pointer',
-                  opacity: isFollowingLoading ? 0.6 : 1
+                  opacity: isFollowingLoading ? 0.6 : 1,
+                  transition: 'all 0.3s ease'
                 }}
               >
-                {isFollowingLoading ? 'Loading...' : (isFollowing ? 'Following' : 'Follow')}
+                {isFollowingLoading ? 'Loading...' : (isFollowing ? 'Unfollow' : 'Follow')}
               </button>
             )}
           </div>

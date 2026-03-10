@@ -10,6 +10,7 @@ const Navbar = ({ user, onLogout }) => {
   const [showResults, setShowResults] = useState(false);
   const [searching, setSearching] = useState(false);
   const [showSearchMobile, setShowSearchMobile] = useState(false);
+  const [showCreatePost, setShowCreatePost] = useState(false);
   const searchRef = useRef(null);
 
   const handleLogout = () => {
@@ -211,42 +212,56 @@ const Navbar = ({ user, onLogout }) => {
 
       {/* Mobile Bottom Navigation */}
       {user && (
-        <nav className="mobile-bottom-nav">
-          <Link 
-            to="/" 
-            className={`mobile-nav-item ${location.pathname === '/' ? 'active' : ''}`}
-            title="Home"
-          >
-            <i className="bi bi-house-fill"></i>
-            <span>Home</span>
-          </Link>
-          <button
-            onClick={() => setShowSearchMobile(!showSearchMobile)}
-            className={`mobile-nav-item ${showSearchMobile ? 'active' : ''}`}
-            title="Search"
-            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-          >
-            <i className="bi bi-search"></i>
-            <span>Search</span>
-          </button>
-          <Link 
-            to={`/profile/${user.id}`}
-            className={`mobile-nav-item ${location.pathname.includes('/profile') ? 'active' : ''}`}
-            title="Profile"
-          >
-            <i className="bi bi-person-circle"></i>
-            <span>Profile</span>
-          </Link>
-          <button
-            onClick={handleLogout}
-            className="mobile-nav-item"
-            title="Logout"
-            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-          >
-            <i className="bi bi-box-arrow-right"></i>
-            <span>Logout</span>
-          </button>
-        </nav>
+        <>
+          <nav className="mobile-bottom-nav">
+            <Link 
+              to="/" 
+              className={`mobile-nav-item ${location.pathname === '/' ? 'active' : ''}`}
+              title="Home"
+            >
+              <i className="bi bi-house-fill"></i>
+            </Link>
+            <button
+              onClick={() => setShowSearchMobile(!showSearchMobile)}
+              className={`mobile-nav-item ${showSearchMobile ? 'active' : ''}`}
+              title="Search"
+              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              <i className="bi bi-search"></i>
+            </button>
+            
+            {/* FAB Button - Create Post */}
+            <button
+              onClick={() => {
+                const modal = document.getElementById('createPostModal');
+                if (modal) {
+                  const bsModal = new window.bootstrap.Modal(modal);
+                  bsModal.show();
+                }
+              }}
+              className="mobile-fab-button"
+              title="Create Post"
+            >
+              <i className="bi bi-plus"></i>
+            </button>
+            
+            <Link 
+              to={`/profile/${user.id}`}
+              className={`mobile-nav-item ${location.pathname.includes('/profile') ? 'active' : ''}`}
+              title="Profile"
+            >
+              <i className="bi bi-person-circle"></i>
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="mobile-nav-item"
+              title="Logout"
+              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              <i className="bi bi-box-arrow-right"></i>
+            </button>
+          </nav>
+        </>
       )}
     </>
   );
