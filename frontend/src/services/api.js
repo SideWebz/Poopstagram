@@ -40,6 +40,8 @@ export const postService = {
     api.get(`/api/posts/user/${userId}`),
   getPostById: (postId) =>
     api.get(`/api/posts/${postId}`),
+  getBestPostToday: () =>
+    api.get('/api/posts/best-today'),
   createPost: (imageUrl, caption) =>
     api.post('/api/posts', { imageUrl, caption }),
   likePost: (postId) =>

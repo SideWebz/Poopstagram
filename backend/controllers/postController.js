@@ -1,5 +1,45 @@
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
+const User = require('../models/User');
+
+// Helper function to calculate streak
+const updateStreak = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    if (!user) return;
+
+    // Get today's date at midnight
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Get last post date at midnight
+    const lastPostDate = user.lastPostDate ? new Date(user.lastPostDate) : null;
+    if (lastPostDate) {
+      lastPostDate.setHours(0, 0, 0, 0);
+    }
+
+    // If they posted today, don't update
+    if (lastPostDate && lastPostDate.getTime() === today.getTime()) {
+      return;
+    }
+
+    // If last post was yesterday, increment streak
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (lastPostDate && lastPostDate.getTime() === yesterday.getTime()) {
+      user.streak += 1;
+    } else if (!lastPostDate || lastPostDate.getTime() < yesterday.getTime()) {
+      // If no post yesterday (or older), reset streak to 1
+      user.streak = 1;
+    }
+
+    user.lastPostDate = new Date();
+    await user.save();
+  } catch (error) {
+    console.error('Error updating streak:', error);
+  }
+};
 
 exports.createPost = async (req, res) => {
   try {
@@ -17,6 +57,9 @@ exports.createPost = async (req, res) => {
 
     await post.save();
     await post.populate('author', 'username profilePicture');
+
+    // Update user streak
+    await updateStreak(req.user.id);
 
     res.status(201).json({ message: 'Post created', post });
   } catch (error) {
@@ -172,6 +215,69 @@ exports.ratePost = async (req, res) => {
       averageScore,
       totalRatings: post.ratings.length,
       userRating: score
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+exports.getBestPostToday = async (req, res) => {
+  try {
+    // Get today's date at midnight
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Get tomorrow's date at midnight
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    // Find all posts from today
+    const postsToday = await Post.find({
+      createdAt: {
+        $gte: today,
+        $lt: tomorrow
+      }
+    })
+      .populate('author', 'username profilePicture')
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'author',
+          select: 'username profilePicture'
+        }
+      });
+
+    if (postsToday.length === 0) {
+      return res.json({ message: 'No posts today', post: null });
+    }
+
+    // Calculate average rating for each post and find the best one
+    let bestPost = null;
+    let bestAverage = -1;
+
+    postsToday.forEach(post => {
+      const average = post.ratings.length > 0
+        ? Math.round(post.ratings.reduce((sum, r) => sum + r.score, 0) / post.ratings.length)
+        : 0;
+
+      // Only consider posts with ratings
+      if (post.ratings.length > 0 && average > bestAverage) {
+        bestAverage = average;
+        bestPost = post;
+      }
+    });
+
+    if (!bestPost) {
+      return res.json({ message: 'No rated posts today', post: null });
+    }
+
+    const averageScore = Math.round(bestPost.ratings.reduce((sum, r) => sum + r.score, 0) / bestPost.ratings.length);
+
+    res.json({
+      post: bestPost,
+      averageScore,
+      totalRatings: bestPost.ratings.length,
+      message: 'Best shit of the day'
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });

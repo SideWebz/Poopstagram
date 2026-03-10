@@ -114,6 +114,11 @@ const Navbar = ({ user, onLogout }) => {
           {user && (
             <ul className="nav-right">
               <li className="nav-item">
+                <Link className="nav-link" to="/best-today" title="Best Shit of the Day">
+                  <i className="bi bi-globe"></i>
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link className="nav-link" to="/" title="Home">
                   <i className="bi bi-house-fill"></i>
                 </Link>
@@ -214,6 +219,13 @@ const Navbar = ({ user, onLogout }) => {
       {user && (
         <>
           <nav className="mobile-bottom-nav">
+            <Link 
+              to="/best-today" 
+              className={`mobile-nav-item ${location.pathname === '/best-today' ? 'active' : ''}`}
+              title="Best Today"
+            >
+              <i className="bi bi-globe"></i>
+            </Link>
             <Link 
               to="/" 
               className={`mobile-nav-item ${location.pathname === '/' ? 'active' : ''}`}

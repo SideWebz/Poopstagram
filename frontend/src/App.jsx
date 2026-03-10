@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
+import BestToday from './pages/BestToday';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -55,6 +56,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={user ? <Home user={user} /> : <Navigate to="/login" />} />
+        <Route path="/best-today" element={user ? <BestToday user={user} /> : <Navigate to="/login" />} />
         <Route path="/login" element={!user ? <Login onLoginSuccess={handleLoginSuccess} /> : <Navigate to="/" />} />
         <Route path="/register" element={!user ? <Register onLoginSuccess={handleLoginSuccess} /> : <Navigate to="/" />} />
         <Route path="/profile" element={user ? <Profile currentUser={user} /> : <Navigate to="/login" />} />

@@ -220,6 +220,14 @@ const Profile = ({ currentUser }) => {
                 <div className="stat-number">{allPosts.length}</div>
                 <div className="stat-label">posts</div>
               </div>
+              {user?.streak > 0 && (
+                <div className="stat">
+                  <div className="stat-number" style={{ color: '#ff6b6b', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    🔥 {user.streak}
+                  </div>
+                  <div className="stat-label">streak</div>
+                </div>
+              )}
             </div>
 
             <div className="profile-bio">{user?.email}</div>

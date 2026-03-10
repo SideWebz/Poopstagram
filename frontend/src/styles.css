@@ -214,9 +214,10 @@ header {
 
 /* FEED CONTAINER */
 .feed-container {
-  max-width: 500px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 1rem 0;
+  padding: 0;
+  background: white;
 }
 
 .create-post-btn {
@@ -251,25 +252,27 @@ header {
 .post-card {
   background: white;
   border: none;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: none;
   margin-bottom: 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  margin: 0 0 1rem 0;
+  box-shadow: none;
+  border-radius: 0;
+  margin: 0;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 9px solid #fafafa;
 }
 
 .post-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .post-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem;
+  padding: 1rem;
   border-bottom: none;
+  background: white;
 }
 
 .post-header-left {
@@ -279,8 +282,8 @@ header {
 }
 
 .post-avatar {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
@@ -288,7 +291,7 @@ header {
   justify-content: center;
   color: white;
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   flex-shrink: 0;
   object-fit: cover;
 }
@@ -296,17 +299,20 @@ header {
 .post-author-info {
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .post-author {
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  font-size: 0.95rem;
   color: var(--text);
+  line-height: 1.2;
 }
 
 .post-time {
   font-size: 0.75rem;
   color: var(--text-light);
+  margin-top: 0.2rem;
 }
 
 .post-delete-btn {
@@ -332,19 +338,21 @@ header {
 }
 
 .post-caption {
-  padding: 0.75rem;
+  padding: 1rem;
   font-size: 0.9rem;
-  line-height: 1.4;
+  line-height: 1.5;
   color: var(--text);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #f0f0f0;
   margin: 0;
+  background: white;
 }
 
 .post-actions {
   display: flex;
-  gap: 1rem;
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--border);
+  gap: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  background: white;
 }
 
 .post-action-btn {
@@ -378,17 +386,19 @@ header {
 }
 
 .post-stats {
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #f0f0f0;
+  background: white;
 }
 
 /* COMMENTS SECTION */
 .comments-section {
   padding: 0;
-  background: #fafafa;
+  background: white;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .comment-preview {
@@ -554,24 +564,28 @@ header {
 
 .profile-stats {
   display: flex;
-  gap: 3rem;
+  gap: 2.5rem;
   margin-bottom: 1.5rem;
+  justify-content: flex-start;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .stat-number {
-  font-weight: 600;
-  font-size: 1.1rem;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--text);
 }
 
 .stat-label {
   font-size: 0.85rem;
   color: var(--text-light);
+  margin-top: 0.3rem;
+  font-weight: 500;
 }
 
 .profile-bio {
@@ -1056,7 +1070,7 @@ input[type='range']::-moz-range-thumb {
 
   .profile-stats {
     gap: 1.5rem;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .stat-number {
@@ -1083,20 +1097,22 @@ input[type='range']::-moz-range-thumb {
 
   .feed-container {
     max-width: 100%;
-    padding: 0.5rem 0 75px 0;
+    padding: 0 0 75px 0;
     margin: 0;
+    background: #fafafa;
   }
 
   .post-card {
-    margin: 0 0.5rem 0.75rem 0.5rem;
-    border-radius: 8px;
+    margin: 0;
+    border-radius: 0;
     padding: 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    box-shadow: none;
     border: none;
+    border-bottom: 8px solid #fafafa;
   }
 
   .post-header {
-    padding: 0.6rem 0.75rem;
+    padding: 0.75rem 1rem;
   }
 
   .post-image {
@@ -1105,13 +1121,19 @@ input[type='range']::-moz-range-thumb {
     display: block;
   }
 
-  .post-title {
-    font-size: 0.9rem;
+  .post-stats {
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .post-caption {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
   }
 
   .post-actions {
-    padding: 0.5rem 0.75rem;
-    gap: 1rem;
+    padding: 0.75rem 1rem;
+    gap: 1.5rem;
   }
 
   .post-action-btn {
