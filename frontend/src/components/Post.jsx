@@ -110,6 +110,9 @@ const Post = ({ post, currentUser, onPostUpdate, onPostDelete }) => {
     }
   };
 
+  // Compute visible comments based on showAllComments state
+  const visibleComments = showAllComments ? comments : comments.slice(0, 3);
+
   return (
     <div className="post-card" style={{ marginBottom: '0.5rem' }}>
       {/* Post Header */}
